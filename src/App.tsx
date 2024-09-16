@@ -1,4 +1,5 @@
 import './App.css'
+import GetWords from './components/GetWords'
 
 function App() {
 
@@ -6,6 +7,7 @@ function App() {
     <>
       <main>
         <h1>Dictionary</h1>
+        <GetWords />
       </main>
     </>
   )
