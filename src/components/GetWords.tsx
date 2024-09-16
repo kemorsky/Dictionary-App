@@ -26,9 +26,10 @@ interface Phonetic {
 export default function GetWords() {
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState<Word[]>([]);
-    const  [error, setError] = useState('')
+    const [error, setError] = useState('')
 
     const handleSearch = async () => {
+        setSearchResults([]);
         event?.preventDefault()
         if (searchTerm === '') {
             setError('Please enter a word')
@@ -41,6 +42,7 @@ export default function GetWords() {
         console.log(data)
     };
 
+
     return (
         <form onSubmit={handleSearch}>
             <input
@@ -50,11 +52,11 @@ export default function GetWords() {
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button type="submit">Search</button>
-            {searchResults.map((word) => (
-                <div key={word.word}>
+            {searchResults.map((word, index) => ( // to self: index helps filter out and make each word unique so that i get no duplicates
+                <div key={`${index}-${word.word}`}>
                     <h2>{word.word}</h2>
-                    {word.phonetics.map((phonetic) => (
-                        <div key={phonetic.text}>
+                    {word.phonetics.map((phonetic, i) => (
+                        <div key={`${i}-${phonetic.text}`}>
                             <p>{phonetic.text}</p>
                             {phonetic.audio && (
                                 <audio controls>
@@ -63,8 +65,8 @@ export default function GetWords() {
                             )}
                         </div>
                     ))}
-                    {word.meanings.map((meaning) => (
-                        <div key={meaning.partOfSpeech}>
+                    {word.meanings.map((meaning, i) => (
+                        <div key={`${i}-${meaning.partOfSpeech}`}>
                             <h3>{meaning.partOfSpeech}</h3>
                             {meaning.definitions.map((definition) => (
                                 <div key={definition.definition}>
