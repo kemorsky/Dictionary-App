@@ -44,7 +44,7 @@ export default function GetWords() {
 
 
     return (
-        <form onSubmit={handleSearch}>
+        <form className="max-w-lg" onSubmit={handleSearch}>
             <input
                 type="search"
                 placeholder="Search for a word"
@@ -52,33 +52,35 @@ export default function GetWords() {
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button type="submit">Search</button>
-            {searchResults.map((word, index) => ( // to self: index helps filter out and make each word unique so that i get no duplicates
-                <div key={`${index}-${word.word}`}>
-                    <h2>{word.word}</h2>
-                    {word.phonetics.map((phonetic, i) => (
-                        <div key={`${i}-${phonetic.text}`}>
-                            <p>{phonetic.text}</p>
-                            {phonetic.audio && (
-                                <audio controls>
-                                <source src={phonetic.audio} type="audio/mp3" />
-                            </audio>
-                            )}
-                        </div>
-                    ))}
-                    {word.meanings.map((meaning, i) => (
-                        <div key={`${i}-${meaning.partOfSpeech}`}>
-                            <h3>{meaning.partOfSpeech}</h3>
-                            {meaning.definitions.map((definition) => (
-                                <div key={definition.definition}>
-                                    <p>{definition.definition}</p>
-                                    {definition.example && <p>{definition.example}</p>}
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            ))}
-            {error && <h2>{error}</h2>}
+            <section className="flex flex-col justify-center align-center">
+                {searchResults.map((word, index) => ( // to self: index helps filter out and make each word unique so that i get no duplicates
+                    <div className="border rounded border-white bg-gray-600 flex flex-col justify-center align-center w-lg mb-5 p-2" key={`${index}-${word.word}`}>
+                        <h2 className="text-xl"><b>Word: </b>{word.word}</h2>
+                        {word.phonetics.map((phonetic, i) => (
+                            <div key={`${i}-${phonetic.text}`}>
+                                <p className="text-xl"><b>Phonetic Text:</b> {phonetic.text}</p>
+                                {phonetic.audio && (
+                                    <audio controls>
+                                    <source src={phonetic.audio} type="audio/mp3" />
+                                </audio>
+                                )}
+                            </div>
+                        ))}
+                        {word.meanings.map((meaning, i) => (
+                            <div key={`${i}-${meaning.partOfSpeech}`}>
+                                <h3 className="text-xl"><b>Part of Speech: </b>{meaning.partOfSpeech}</h3>
+                                {meaning.definitions.map((definition) => (
+                                    <div key={definition.definition}>
+                                        <p className="text-left leading-loose"><b>Definition: </b>{definition.definition}</p>
+                                        {definition.example && <p>{definition.example}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                ))}
+                {error && <h2>{error}</h2>}
+            </section>
         </form>
     );
 }
