@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",  // Adjust if you're using a different JSX runtime
+    "isolatedModules": true
   },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" },
-    { "types": ["vitest/globals", "@testing-library/jest-dom"]}
+    { "path": "./tsconfig.node.json" }
   ]
 }
