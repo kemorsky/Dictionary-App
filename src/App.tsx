@@ -27,7 +27,7 @@ function App() {
   return (
     <>
       <main className='mind-w-lg bg-gray-200 dark:bg-gray-800 p-4 border rounded-xl grid grid-cols-1'>
-        <img className='w-12 justify-self-end' onClick={handleSwitch} src={image} alt="" />
+        <img className='w-12 justify-self-end' onClick={handleSwitch} src={image} alt="swap" />
         <h1 className='text-black dark:text-white'>Dictionary</h1>
         <GetWords />
       </main>

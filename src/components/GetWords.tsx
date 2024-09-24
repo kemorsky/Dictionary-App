@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+// setup for all words to be easily accessible and rendered on the screen
 interface Phonetic {
     text: string;
     audio: string;
@@ -27,8 +29,19 @@ export default function GetWords() {
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState<Word[]>([]);
     const [error, setError] = useState('')
+    const [favorites, setFavorites] = useState<Word[]>([]);
 
-    const handleSearch = async () => {
+      // load favorites from localStorage on site startup
+    useEffect(() => {
+    const savedFavorites = Object.keys(localStorage).map((key) => {
+      const savedWord = localStorage.getItem(key);
+      return savedWord ? JSON.parse(savedWord) : null;
+    }).filter((item) => item !== null);
+    
+    setFavorites(savedFavorites as Word[]);
+  }, []);
+
+    const handleSearch = async (event: React.FormEvent) => { // search for a word within the API
         setSearchResults([]);
         event?.preventDefault()
         if (searchTerm === '') {
@@ -42,6 +55,19 @@ export default function GetWords() {
         console.log(data)
     };
 
+    const handleFavorite = (word: Word) => { // add words to the favorites list
+        const existingFavorite = favorites.some((fav) => fav.word === word.word);
+    
+        if (!existingFavorite) {
+          localStorage.setItem(word.word, JSON.stringify(word));
+          setFavorites([...favorites, word]);
+        }
+      };
+    
+      const removeFavorite = (word: Word) => { // remove words from the favorites list
+        localStorage.removeItem(word.word);
+        setFavorites(favorites.filter((fav) => fav.word !== word.word));
+      };
 
     return (
         <form className="w-lg" onSubmit={handleSearch}>
@@ -53,10 +79,18 @@ export default function GetWords() {
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button className='bg-gray-900 text-white p-2 rounded-xl' type="submit">Search</button>
-            <section className="flex flex-col justify-center align-center mt-4">
+            <section aria-label="results" className="flex flex-col justify-center align-center mt-4">
                 {searchResults.map((word, index) => ( // to self: index helps filter out and make each word unique so that i get no duplicates
                     <div className="border rounded border-gray-500 dark:border-white bg-white dark:bg-gray-600 flex flex-col justify-center align-center w-lg mb-5 p-2" key={`${index}-${word.word}`}>
-                        <h2 className="text-2xl text-black dark:text-white"><b>Word: </b>{word.word}</h2>
+                        <h2 className="text-2xl text-black dark:text-white">
+                            <b>Word: </b>
+                            {word.word}
+                            <button className='ml-2 bg-gray-500 dark:bg-gray-900 text-white p-2 rounded-xl' type="submit" onClick={() => handleFavorite(word)}>
+                                {favorites.some((fav) => fav.word === word.word)
+                                ? "Added to Favorites"
+                                : "Add to Favorites"}
+                            </button>
+                        </h2>
                         {word.phonetics.map((phonetic, i) => (
                             <div className="border rounded border-black p-2 m-1" key={`${i}-${phonetic.text}`}>
                                 <p className="text-left text-xl text-black dark:text-white"><b>Phonetic Text:</b> {phonetic.text}</p>
@@ -81,6 +115,19 @@ export default function GetWords() {
                     </div>
                 ))}
                 {error && <h2>{error}</h2>}
+                <section aria-label="favorites" className="bg-white dark:bg-gray-600 text-black dark:text-white mt-1 p-3 flex align-start flex-col border rounded border-gray-500 dark:border-white">
+                    <h2>Favorite words:</h2>
+                    <ul className="flex flex-col w-1/5 max-h-30 justify-around align-center">
+                    {favorites.map((fav, i) => (
+                        <li key={i} className="underline text-left">
+                        {fav.word}
+                        <button className="ml-2 text-red-500 bg-red-900 text-white p-2 rounded-xl" onClick={() => removeFavorite(fav)}>
+                            Remove
+                        </button>
+                        </li>
+                    ))}
+                    </ul>
+                </section>
             </section>
         </form>
     );
