@@ -25,7 +25,7 @@ const server = setupServer(
         return HttpResponse.json([
           {
             word: 'pumpkin',
-            phonetics: [{ text: '/ˈpʌmpkɪn/', audio: '' }],
+            phonetics: [{ text: '/ˈpʌmpkɪn/', audio: 'https://api.dictionaryapi.dev/media/pronunciations/en/pumpkin-us.mp3' }],
             meanings: [
               {
                 partOfSpeech: 'noun',
@@ -179,22 +179,28 @@ test('it should let me remove words from favorites', async () => {
 })
 
 test('it should let me play the audio file of the word', async () => {
-  render(<GetWords/>)
+  render(<GetWords />);
 
   const user = userEvent.setup();
-  const audioPlayback = screen.getByRole('audio', {name: /audio/i})
 
+  // Search for the word "pumpkin"
   const searchInput = screen.getByPlaceholderText(/search for a word/i);
   const searchButton = screen.getByRole('button', { name: /search/i });
 
-  await user.type(searchInput, 'dog');
+  await user.type(searchInput, 'pumpkin');
   await user.click(searchButton);
 
-  // Wait for the word "dog" to appear in the search results
+  // Wait for the word "pumpkin" to appear in the search results
   const wordHeader = await screen.findByRole('heading', { name: /word: pumpkin/i });
   expect(wordHeader).toBeInTheDocument();
 
-  await user.click(audioPlayback)
+  // Wait for the audio player to appear after the search
+  const audioPlayback = await screen.findByLabelText('Audio file');
 
-  expect(wordHeader).toHaveAttribute('src', 'https://api.dictionaryapi.dev/media/pronunciations/en/pumpkin.mp3')
-})
+  // Get the source element from the audio tag
+  const audioSource = audioPlayback.querySelector('source');
+  expect(audioSource).toHaveAttribute('src', 'https://api.dictionaryapi.dev/media/pronunciations/en/pumpkin-us.mp3');
+
+  // Simulate playing the audio file
+  await user.click(audioPlayback);
+});

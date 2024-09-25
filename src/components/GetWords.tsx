@@ -95,7 +95,7 @@ export default function GetWords() {
                             <div className="border rounded border-black p-2 m-1" key={`${i}-${phonetic.text}`}>
                                 <p className="text-left text-xl text-black dark:text-white"><b>Phonetic Text:</b> {phonetic.text}</p>
                                 {phonetic.audio && (
-                                    <audio controls>
+                                    <audio aria-label="Audio file" controls>
                                     <source src={phonetic.audio} type="audio/mp3" />
                                 </audio>
                                 )}
