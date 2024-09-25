@@ -37,7 +37,6 @@ const server = setupServer(
       }),
   );
   beforeAll(() => server.listen());
-
   afterAll(() => server.close());
 
   // Ensure localStorage is clean between tests

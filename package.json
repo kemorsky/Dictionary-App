@@ -16,6 +16,7 @@
     "autoprefixer": "^10.4.20",
     "lodash": "^4.17.21",
     "msw": "^2.4.8",
+    "node-fetch": "^3.3.2",
     "postcss": "^8.4.47",
     "react": "^18.3.1",
     "react-audio-player": "^0.17.0",
