@@ -25,7 +25,7 @@ interface Phonetic {
     meanings: Meaning[];
   }
 
-export default function GetWords() {
+export default function GetWords() { // THE MAIN FUNCTION TO GET AND HANDLE WORDS FROM THE API AS WELL AS LOCALsTORAGE SETUP
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState<Word[]>([]);
     const [error, setError] = useState('')

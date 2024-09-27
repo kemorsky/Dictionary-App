@@ -6,13 +6,13 @@ import image from './assets/image.png'
 function App() {
   const [darkMode, setDarkMode] = useState("light")
 
-  useEffect(() => {
+  useEffect(() => { // SETUP DARK MODE AS THE PREFERRED MODE IF THE USER HAS THAT SETTING IN THEIR BROWSER
     if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setDarkMode('dark')
     }
   }, [])
 
-  useEffect(() => {
+  useEffect(() => { // MAIN PART OF SWITCHING BETWEEN THE TWO MODES
     if (darkMode === "dark"){
       document.documentElement.classList.add("dark")
     } else {
@@ -20,7 +20,7 @@ function App() {
     }
   }, [darkMode])
 
-  const handleSwitch = () => {
+  const handleSwitch = () => { // LIGHT/DARK MODE SWITCH
     setDarkMode(darkMode === 'light' ? 'dark' : 'light')
   }
 

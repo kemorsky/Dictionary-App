@@ -39,12 +39,12 @@ const server = setupServer( // prepare the mock server I will be working with
   beforeAll(() => server.listen());
   afterAll(() => server.close());
 
-  // Ensure localStorage is clean between tests
+  // make sure localStorage is clean between tests
   beforeEach(() => {
     localStorage.clear();
   });
 
-  // Clean up after each test
+  // clean up after each test
   afterEach(() => {
     cleanup();
   });
@@ -53,18 +53,18 @@ const server = setupServer( // prepare the mock server I will be working with
     render(<GetWords />);
     const user = userEvent.setup();
     
-    // Simulate typing the word "pumpkin"
+    // Typing the word "pumpkin"
     const input = screen.getByRole('searchbox');
     await user.type(input, 'pumpkin');
     
-    // Simulate clicking the search button
+    // click the search button
     const submitButton = screen.getByRole('button', { name: /search/i });
     await user.click(submitButton);
 
-    // Target only the results section where the word "pumpkin" should appear
-    const resultsSection = screen.getByRole('region', { name: /results/i }); // Use a specific region role for results, adjust this to your component structure
+    // show only search results for pumpkin
+    const resultsSection = screen.getByRole('region', { name: /results/i }); // place all pumpkins into the results container
 
-    // Wait for "Word: pumpkin" to appear in the results section
+    // wait for pumpkin to yield results
  
     expect(await within(resultsSection).findByText('pumpkin')).toBeInTheDocument();
 });
@@ -84,14 +84,14 @@ test("should show an error when user submits without entering a word", async () 
     const user = userEvent.setup();
     const submitButton = screen.getByRole('button', { name: /search/i });
     
-    // Simulate clicking the "Search" button
+    // click the search button
     await user.click(submitButton);
 
-    // Check that the input is empty
+    // check if input is empty
     const input = screen.getByRole("searchbox");
     expect(input).toHaveValue("");
 
-    // Check that the error message is displayed
+    // check that the error message is shown
     expect(screen.getByText('Please enter a word')).toBeInTheDocument();
 });
 
@@ -104,7 +104,7 @@ test('it should clear out the previous search results before rendering new ones'
     await user.type(input, 'dog');
     const resultsSection = screen.getByRole('region', { name: /results/i });
 
-    // Button clicked
+    // click the search button
     const submitButton = screen.getByRole('button', { name: /search/i });
     await user.click(submitButton);
     expect(await within(resultsSection).findByText('dog')).toBeInTheDocument();
@@ -121,7 +121,7 @@ test('it should clear out the previous search results before rendering new ones'
 
 test('it should let me save words as favorites', async () => {
   render(<GetWords />)
-  // Simulate searching for the word "dog"
+  // search for the word dog
   const user = userEvent.setup();
 
   const searchInput = screen.getByPlaceholderText(/search for a word/i);
@@ -130,25 +130,25 @@ test('it should let me save words as favorites', async () => {
   await user.type(searchInput, 'dog');
   await user.click(searchButton);
 
-  // Wait for the word "dog" to appear in the search results
+  // wait for the search results to appear
   const wordHeader = await screen.findByRole('heading', { name: /word: dog/i });
   expect(wordHeader).toBeInTheDocument();
 
-  // Click the "Add to Favorites" button
+  // click on the button to add to favorites
   const favoriteButton = screen.getByRole('button', { name: /add to favorites/i });
   await user.click(favoriteButton);
 
-  // Check that "dog" is now in the favorites section
+  // check that the word is in the favorites section
   const favoriteContainer = screen.getByRole('region', { name: /favorites/i });
   expect(within(favoriteContainer).getByText('dog')).toBeInTheDocument();
 
-  // Verify that the "dog" word is present in localStorage
+  // check if dog is in localStorage
   expect(localStorage.getItem('dog')).toBeTruthy();
 })
 
 test('it should let me remove words from favorites', async () => {
   render(<GetWords />)
-  // Simulate searching for the word "dog"
+
   const user = userEvent.setup();
 
   const searchInput = screen.getByPlaceholderText(/search for a word/i);
@@ -157,22 +157,22 @@ test('it should let me remove words from favorites', async () => {
   await user.type(searchInput, 'dog');
   await user.click(searchButton);
 
-  // Wait for the word "dog" to appear in the search results
+  // wait for the word to appear
   const wordHeader = await screen.findByRole('heading', { name: /word: dog/i });
   expect(wordHeader).toBeInTheDocument();
 
-  // Click the "Add to Favorites" button
+  // click the add to favorites button
   const favoriteButton = screen.getByRole('button', { name: /add to favorites/i });
   await user.click(favoriteButton);
 
-  // Check that "dog" is now in the favorites section
+  // check if dog is in the favorites section
   const favoriteContainer = screen.getByRole('region', { name: /favorites/i });
   expect(within(favoriteContainer).getByText('dog')).toBeInTheDocument();
 
   const removeButton = within(favoriteContainer). getByRole('button', {name: /remove/i})
-  await user.click(removeButton)
+  await user.click(removeButton) // click the remove button
 
-  expect(within(favoriteContainer).queryByTestId('dog')).toBeNull()
+  expect(within(favoriteContainer).queryByTestId('dog')).toBeNull() // check if dog is still in the section
 
   expect(localStorage.getItem('dog')).toBeNull()
 })
@@ -189,17 +189,17 @@ test('it should let me play the audio file of the word', async () => {
   await user.type(searchInput, 'pumpkin');
   await user.click(searchButton);
 
-  // Wait for the word "pumpkin" to appear in the search results
+  // wait for the word to appear
   const wordHeader = await screen.findByRole('heading', { name: /word: pumpkin/i });
   expect(wordHeader).toBeInTheDocument();
 
-  // Wait for the audio player to appear after the search
+  // wait for the audio player to appear
   const audioPlayback = await screen.findByLabelText('Audio file');
 
-  // Get the source element from the audio tag
+  // get the audio source file
   const audioSource = audioPlayback.querySelector('source');
   expect(audioSource).toHaveAttribute('src', 'https://api.dictionaryapi.dev/media/pronunciations/en/pumpkin-us.mp3');
 
-  // Simulate playing the audio file
+  // play the audio file
   await user.click(audioPlayback);
 });
