@@ -6,7 +6,7 @@ import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 import GetWords from '../components/GetWords'
 
-const server = setupServer(
+const server = setupServer( // prepare the mock server I will be working with
     http.get("https://api.dictionaryapi.dev/api/v2/entries/en/dog", () => {
       return HttpResponse.json([
         {
@@ -74,9 +74,9 @@ test("should show what the user is typing in the searchbar", async () =>  {
     const user = userEvent.setup();
     const input = screen.getByRole("searchbox")
 
-    await user.type(input, 'hello')
+    await user.type(input, 'hello') // simulate typing in hello
 
-    expect(input).toHaveValue('hello')
+    expect(input).toHaveValue('hello') // output "hello"
 });
 
 test("should show an error when user submits without entering a word", async () => {
