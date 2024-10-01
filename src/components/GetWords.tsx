@@ -121,7 +121,7 @@ export default function GetWords() { // THE MAIN FUNCTION TO GET AND HANDLE WORD
                     {favorites.map((fav, i) => (
                         <li key={i} className="underline text-left">
                         {fav.word}
-                        <button className="ml-2 text-red-500 bg-red-900 text-white p-2 rounded-xl" onClick={() => removeFavorite(fav)}>
+                        <button className="ml-2 bg-red-900 text-white p-2 rounded-xl" onClick={() => removeFavorite(fav)}>
                             Remove
                         </button>
                         </li>
