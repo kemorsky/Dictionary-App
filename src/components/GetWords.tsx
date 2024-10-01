@@ -31,14 +31,51 @@ export default function GetWords() { // THE MAIN FUNCTION TO GET AND HANDLE WORD
     const [error, setError] = useState('')
     const [favorites, setFavorites] = useState<Word[]>([]);
 
-      // load favorites from localStorage on site startup
-    useEffect(() => {
-    const savedFavorites = Object.keys(localStorage).map((key) => {
-      const savedWord = localStorage.getItem(key);
-      return savedWord ? JSON.parse(savedWord) : null;
-    }).filter((item) => item !== null);
-    
-    setFavorites(savedFavorites as Word[]);
+  // Helper function to safely access localStorage
+  const getLocalStorage = (key: string) => {
+    if (typeof window === 'undefined') return null; // Ensure window is available
+    try {
+      return localStorage.getItem(key);
+    } catch (err) {
+      console.error('Error accessing localStorage:', err);
+      return null;
+    }
+  };
+
+  const setLocalStorage = (key: string, value: string) => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(key, value);
+    } catch (err) {
+      console.error('Error saving to localStorage:', err);
+    }
+  };
+
+  const removeLocalStorage = (key: string) => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.removeItem(key);
+    } catch (err) {
+      console.error('Error removing from localStorage:', err);
+    }
+  };
+
+  // Load favorites from localStorage on site startup
+  useEffect(() => {
+    if (typeof window === 'undefined') return; // Ensure window is available
+
+    try {
+      const savedFavorites = Object.keys(localStorage)
+        .map((key) => {
+          const savedWord = getLocalStorage(key);
+          return savedWord ? JSON.parse(savedWord) : null;
+        })
+        .filter((item) => item !== null);
+
+      setFavorites(savedFavorites as Word[]);
+    } catch (err) {
+      console.error('Error loading favorites from localStorage:', err);
+    }
   }, []);
 
     const handleSearch = async (event: React.FormEvent) => { // search for a word within the API
@@ -59,13 +96,13 @@ export default function GetWords() { // THE MAIN FUNCTION TO GET AND HANDLE WORD
         const existingFavorite = favorites.some((fav) => fav.word === word.word);
     
         if (!existingFavorite) {
-          localStorage.setItem(word.word, JSON.stringify(word));
+          setLocalStorage(word.word, JSON.stringify(word));
           setFavorites([...favorites, word]);
         }
       };
     
       const removeFavorite = (word: Word) => { // remove words from the favorites list
-        localStorage.removeItem(word.word);
+        removeLocalStorage(word.word);
         setFavorites(favorites.filter((fav) => fav.word !== word.word));
       };
 
