@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",  // Adjust if you're using a different JSX runtime
+    "jsx": "react-jsx", // Adjust if you're using a different JSX runtime
     "isolatedModules": true
   },
   "files": [],
